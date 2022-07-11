@@ -1,6 +1,6 @@
 # KeyAuth
 
-.NET Authentication Library made for KeyAuth.
+.NET Authentication Library made for KeyAuth. Install the DLL in [Releases](https://github.com/Kokirix/KeyAuth/releases/tag/v1.0.0)
 Please let me know if theres any errors.
 
 Creating a new instance
