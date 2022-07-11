@@ -90,7 +90,7 @@ namespace KeyAuth {
         /// Auto updates the program
         /// </summary>
         internal static void AutoUpdater() {
-            if (App.DownloadLink != null && !string.IsNullOrWhiteSpace(App.DownloadLink)) {
+            if (!string.IsNullOrWhiteSpace(App.DownloadLink)) {
                 var Client = new WebClient();
                 var Path = Application.ExecutablePath + "\\" + GetRandomString(new Random().Next(10, 15)) + ".exe";
                 if (!App.DelAndOpen) {
