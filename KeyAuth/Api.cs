@@ -2,6 +2,7 @@
 using KeyAuth.Storage;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Script.Serialization;
 
 namespace KeyAuth {
@@ -80,7 +81,9 @@ namespace KeyAuth {
         public Results.Registration Register(string Username, string Password, string Key) {
             var Response = Helper.Handler("register", 2, Username, Password, Key);
             if (Response != null) {
-                if (Response["success"]) {
+                if (((Type)Response.GetType()).GetProperties().Any(x => x.Name.Equals("KeyAuth_Invalid")))
+                    return Results.Registration.Failure;
+                else if (Response["success"]) {
                     User.Username = Username;
                     User.Hwid = Response["info"]["hwid"];
                     User.IP = Response["info"]["ip"];
@@ -91,13 +94,13 @@ namespace KeyAuth {
                         Subscriptions.Add(new SubscriptionData() {
                             Subscription = Subscription["subscription"],
                             Expiry = Subscription["expiry"],
-                            Key = Subscription["key"],
+                            Key = Key,
                             TimeLeft = Subscription["timeleft"]
                         });
                     }
                     User.Subscriptions = Subscriptions;
-                    Status = Results.Registration.Success;
                     LoggedIn = true;
+                    return Helper.ApplyStatus(Results.Registration.Success);
                 }
                 else {
                     if (Response["message"] == "invalidkey") return Helper.ApplyStatus(Results.Registration.InvalidKey);
@@ -120,7 +123,9 @@ namespace KeyAuth {
         public Results.Login Login(string Username, string Password) {
             var Response = Helper.Handler("login", 1, Username, Password);
             if (Response != null) {
-                if (Response["success"]) {
+                if (((Type)Response.GetType()).GetProperties().Any(x => x.Name.Equals("KeyAuth_Invalid")))
+                    return Results.Login.Failure;
+                else if (Response["success"]) {
                     User.Username = Username;
                     User.IP = Response["info"]["ip"];
                     User.CreatedAt = Response["info"]["createdate"];
@@ -198,11 +203,11 @@ namespace KeyAuth {
         /// <param name="Variable">The variable you wish to return.</param>
         public string GetUserVariable(string Variable) {
             var Response = Helper.Handler("getvar", 5, Variable);
-            if (Response["success"]) {
+            if (!Helper.isNull(Response)) {
                 Status = Results.Operation.Success;
                 return Response["response"];
             }
-            else if (Response.Contains("Variable not found for user"))
+            else if (((Type)Response.GetType()).GetProperties().Any(x => x.Name.Equals("Variable not found for user")))
                 Status = Results.Operation.InvalidVariable;
             return null;
         }
@@ -213,12 +218,12 @@ namespace KeyAuth {
         /// <returns></returns>
         public string GetGlobalVariable(string VariableID) {
             var Response = Helper.Handler("var", 5, VariableID);
-            if (Response != null) {
+            if (!Helper.isNull(Response)) {
                 if (Response["success"]) {
                     Helper.ApplyStatus(Results.Operation.Success);
                     return Response["message"];
                 }
-                else if (Response.Contains("not found"))
+                else if (((Type)Response.GetType()).GetProperties().Any(x => x.Name.Contains("not found")))
                     return Helper.ApplyStatus(Results.Operation.InvalidVariable);
             }
             Helper.ApplyStatus(Results.Operation.ResponseIsNull);

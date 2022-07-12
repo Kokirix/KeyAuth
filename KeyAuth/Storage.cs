@@ -42,7 +42,7 @@ namespace KeyAuth.Storage {
         /// Checks if the user is blacklisted
         /// </summary>
         /// <returns>A enumerator</returns>
-        public Results.Blacklist IsBlacklisted() {
+        public static Results.Blacklist IsBlacklisted() {
             var Response = Helper.Handler("checkblacklist", 9);
             if (Response != null) {
                 if (Response["success"])

@@ -2,6 +2,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
@@ -132,7 +133,12 @@ namespace KeyAuth {
         /// </summary>
         /// <param name="Text">The text to validate.</param>
         /// <returns></returns>
-        internal static bool isNull(string Text) => Text == null || string.IsNullOrEmpty(Text);
+        internal static bool isNull(dynamic Text) {
+            if (Text.GetType().ToString() == "System.String")
+                return Text == null || string.IsNullOrEmpty(Text);
+            else
+                return Text == null;
+        }
         /// <summary>
         /// Shows an error message.
         /// </summary>
@@ -161,7 +167,8 @@ namespace KeyAuth {
             }
             return "";
         }
-
+        internal static bool ContainsValue(Dictionary<string, List<string>> dictionary, string value)
+        => dictionary.Values.Any(list => list.Contains(value));
     }
 }
 // Made for KeyAuth | Completed by [Kokiri#8556]
