@@ -81,7 +81,7 @@ namespace KeyAuth {
         public Results.Registration Register(string Username, string Password, string Key) {
             var Response = Helper.Handler("register", 2, Username, Password, Key);
             if (Response != null) {
-                if (((Type)Response.GetType()).GetProperties().Any(x => x.Name.Equals("KeyAuth_Invalid")))
+                if (Helper.Contains(Response, "KeyAuth_Invalid"))
                     return Results.Registration.Failure;
                 else if (Response["success"]) {
                     User.Username = Username;
@@ -103,7 +103,7 @@ namespace KeyAuth {
                     return Helper.ApplyStatus(Results.Registration.Success);
                 }
                 else {
-                    if (Response["message"] == "invalidkey") return Helper.ApplyStatus(Results.Registration.InvalidKey);
+                    if      (Response["message"] == "invalidkey") return Helper.ApplyStatus(Results.Registration.InvalidKey);
                     else if (Response["message"].Contains("Username")) return Helper.ApplyStatus(Results.Registration.NameTaken);
                     else if (Response["message"] == "Key Not Found.") return Helper.ApplyStatus(Results.Registration.InvalidKey);
                     else if (Response["message"] == "Key Already Used.") return Helper.ApplyStatus(Results.Registration.KeyAlreadyUsed);

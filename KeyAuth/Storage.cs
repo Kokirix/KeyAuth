@@ -59,7 +59,7 @@ namespace KeyAuth.Storage {
         public static bool SessionValidated() {
             if (SessionID != null) {
                 var Req = Helper.Send(new System.Collections.Specialized.NameValueCollection() { ["type"] = "check", ["Name"] = App.Name, ["sessionid"] = SessionID, ["ownerid"] = App.OwnerID });
-                if (Req != "KeyAuth_Invalid" && Req.Contains("Session")) return true;
+                if (Req != null && !Helper.Contains(Req, "KeyAuth_Invalid") && !Helper.Contains(Req, "Session")) return true;
             }
             return false;
         }

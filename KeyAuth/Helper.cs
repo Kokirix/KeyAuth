@@ -139,6 +139,9 @@ namespace KeyAuth {
             else
                 return Text == null;
         }
+        internal static bool Contains(dynamic dictionary, string finding){
+            return ((Type)dictionary.GetType()).GetProperties().Any(x => x.Name.Equals(finding));
+        }
         /// <summary>
         /// Shows an error message.
         /// </summary>
@@ -167,8 +170,6 @@ namespace KeyAuth {
             }
             return "";
         }
-        internal static bool ContainsValue(Dictionary<string, List<string>> dictionary, string value)
-        => dictionary.Values.Any(list => list.Contains(value));
     }
 }
 // Made for KeyAuth | Completed by [Kokiri#8556]

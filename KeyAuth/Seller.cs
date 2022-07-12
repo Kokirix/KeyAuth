@@ -38,7 +38,7 @@ namespace KeyAuth {
             if (Response != null) {
                 if (Response["success"])
                     return Helper.ApplyStatus(Results.Operation.Success);
-                else if (Response.Contains("not found"))
+                else if (Helper.Contains(Response, "not found"))
                     return Helper.ApplyStatus(Results.Operation.ChannelNotFound);
                 return Helper.ApplyStatus(Results.Operation.Failure);
             }
@@ -56,9 +56,9 @@ namespace KeyAuth {
             if (Helper.isNull(Body)) return Helper.ApplyStatus(Results.WebHook.Failure);
             var Response = Helper.Handler("webhook", 10, WebID, Parameters, Body, ContentType);
             if (Response != null) {
-                if (Response["success"] && !Response.Contains("Invalid Webhook Token"))
+                if (Response["success"] && !Helper.Contains(Response, "Invalid Webhook Token"))
                     return Helper.ApplyStatus(Results.WebHook.Success);
-                else if (Response.Contains("50109"))
+                else if (Helper.Contains(Response, "50109"))
                     return Helper.ApplyStatus(Results.WebHook.InvalidJSON);
                 return Helper.ApplyStatus(Results.WebHook.Failure);
             }
